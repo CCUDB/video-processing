@@ -1,9 +1,14 @@
 <?php
-
 /**
  * Utils...
  *
- *
+ * @author FATESAIKOU
  */
 
-namespace utils;
+namespace Utils\Foo;
+
+include_once 'Includes.php';
+
+function testUtils($str){
+    echo $str;
+}
