@@ -1,3 +1,5 @@
 src/composer.lock
 src/vendor/
 testVideo/
+
+*.swp

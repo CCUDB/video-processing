@@ -4,12 +4,21 @@
  *
  * @author FATESAIKOU
  */
-
+ 
 include_once 'Includes.php';
 
 use Video\VideoStream;
 
-$stream = new VideoStream();
+$action = $_GET['action'];
 
-echo "Hello World\n";
+if ($action === "play") {
+    $play_info = [
+        'video_name' => $_GET['video_name'],
+        'current-time' => $_GET['current_time']
+    ];
 
+    $video_stream_obj = new VideoStream($play_info);
+    $video_stream_obj->start();
+} else {
+    echo "Go Fuck U Self.";
+}

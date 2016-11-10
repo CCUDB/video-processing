@@ -11,11 +11,11 @@ include_once 'Includes.php';
 
 class VideoStream
 {
-    private $construct_str = "VideoStream Constructed";
-    function __construct(){
-        $content = new VideoContent();
+    private $video_name;
+    private $video_id;
 
-        echo "$this->construct_str\n";
+    function __construct($video_info){
+        
     }
 }
 
