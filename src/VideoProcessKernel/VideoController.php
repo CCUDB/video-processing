@@ -8,6 +8,7 @@
 include_once 'Includes.php';
 
 use Video\VideoStream;
+use Video\VideoContent;
 
 $action = $_GET['action'];
 
@@ -22,3 +23,6 @@ if ($action === "play") {
 } else {
     echo "Go Fuck U Self.";
 }
+
+$video_content = new VideoContent('[SumiSora&CASO][Sansyasanyou][01][GB][720p].mp4');
+$video_content->dumpVars();
