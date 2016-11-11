@@ -32,6 +32,14 @@ class VideoContent
         $this->counter = (int)(ceil($offset / CHUNK_SIZE));
     }
 
+    function __destruct() {
+        $this->conn->close();
+    }
+
+    public function setOffset($offset) {
+        $this->counter = (int)(ceil($offset / CHUNK_SIZE));
+    }
+
     public function nextContent() {
         $content_id = $this->file_id + '_' + $this->counter;
         $content = $this->content_table->get($content_id)->run($this->conn);
@@ -50,16 +58,24 @@ class VideoContent
                 $this->content_table->orderBy('ctime')->limit(FREE_NUM)->delete()->run($this->conn);
             }
 
-            // Load Data
-            $this->content_table->get($content_id)->update([
-                'chunk' => \r\binary(
-                    file_get_contents( $this->real_file_path ),
-                    NULL,
-                    NULL,
-                    CHUNK_SIZE * ($this->counter - 1),
-                    CHUNK_SIZE
-                )
-            ]);
+            // Read Data
+            $data = file_get_contents(
+                $this->real_file_path,
+                NULL,
+                NULL,
+                CHUNK_SIZE * ($this->counter - 1),
+                CHUNK_SIZE
+            );
+
+            // If there is no data to read, than set the insert-data content to True
+            if ($data === NULL) {
+                $insert_data = true;
+            } else {
+                $insert_data = \r\binary($data);
+            }
+
+            // Insert data content.
+            $this->content_table->get($content_id)->update(['chunk' => $insert_data])->run($this->conn);
             
             // Reget content again.
             $content = $this->content_table->get($content_id)->run($this->conn);
