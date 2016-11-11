@@ -22,11 +22,11 @@ class VideoContent
     
 
     function __construct($file_name, $offset = 0) {
-        $this->conn = r\connect(DB_HOST, DB_PORT);
-        $this->meta_table = r\db(DB_NAME)->table('video_meta');
-        $this->content_table = r\db(DB_NAME)->table('content_data');
+        $this->conn = \r\connect(DB_HOST, DB_PORT);
+        $this->meta_table = \r\db(DB_NAME)->table('video_meta');
+        $this->content_table = \r\db(DB_NAME)->table('content_data');
 
-        $this->real_file_path = VIDEO_STORAGE + '/' + $file_name;
+        $this->real_file_path = VIDEO_STORAGE . '/' . $file_name;
         $this->file_name = $file_name;
         $this->file_id = $this->meta_table->get($this->real_file_path)->run($this->conn)['video_id'];
         $this->counter = (int)(ceil($offset / CHUNK_SIZE));
@@ -52,7 +52,7 @@ class VideoContent
 
             // Load Data
             $this->content_table->get($content_id)->update([
-                'chunk' => r\binary(
+                'chunk' => \r\binary(
                     file_get_contents( $this->real_file_path ),
                     NULL,
                     NULL,
@@ -79,11 +79,13 @@ class VideoContent
     }
 
     public function dumpVars() {
+        echo '<pre>';
         print_r([
             $this->real_file_path,
             $this->file_name,
             $this->file_id,
             $this->counter
         ]);
+        echo '</pre>';
     }
 } 

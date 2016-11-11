@@ -13,10 +13,7 @@ use Video\VideoContent;
 $action = $_GET['action'];
 
 if ($action === "play") {
-    $play_info = [
-        'video_name' => $_GET['video_name'],
-        'current-time' => $_GET['current_time']
-    ];
+    $play_info = 0; // Get play info!!!
 
     $video_stream_obj = new VideoStream($play_info);
     $video_stream_obj->start();

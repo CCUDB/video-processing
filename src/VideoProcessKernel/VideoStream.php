@@ -17,8 +17,28 @@ class VideoStream
 
     private $video_content_obj;
 
-    function __construct($video_info){
-        
+    function __construct($video_info) {
+        ; 
     }
+
+    private function rdbInit() {
+        ;
+    }
+
+    private function setHeader() {
+        ;
+    }
+
+    private function rdbStream() {
+        ;
+    }
+
+    private function rdbEnd() {
+        ;
+    }
+
+    public function start() {
+        ;
+    } 
 }
 

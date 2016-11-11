@@ -9,4 +9,4 @@ include_once 'VideoStream.php';
 include_once 'VideoContent.php';
 include_once 'Utils.php';
 
-include_once 'Settings.php';
+include_once 'Setting.php';
