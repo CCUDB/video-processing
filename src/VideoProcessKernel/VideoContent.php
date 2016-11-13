@@ -47,7 +47,7 @@ class VideoContent
     }
 
     public function nextContent() {
-        $content_id = $this->file_id + '_' + $this->counter;
+        $content_id = $this->file_id * 10000 + $this->counter;
         $content = $this->content_table->get($content_id)->run($this->conn);
 
         // If content not exist, create -> update. 
@@ -84,31 +84,33 @@ class VideoContent
             $this->content_table->get($content_id)->update(['chunk' => $insert_data])->run($this->conn);
             
             // Reget content again.
-            $content = $this->getContent($content_id);
+            $content_data = $this->getContent($content_id);
         } else if ($content['chunk'] === NULL) {
             // If content is in updating, wait for it.
             $this->content_table->get($content_id)->changes()->run($this->conn)->next();
 
             // Reget content again.
-            $content = $this->getContent($content_id);
-        } else if ($file->counter === $file->first_chunk_id) {
-            $chunk_offset = $file_offset - ($this->first_chunk_id * CHUNK_SIZE);
-            $content = $this->content_table->get($content_id)->slice($chunk_offset)->run($this->conn);
+            $content_data = $this->getContent($content_id);
+        } else if ($this->counter === $this->first_chunk_id) {
+            $chunk_offset = $this->file_offset % CHUNK_SIZE;
+            $content_data = $this->content_table->get($content_id)->getField('chunk')->slice($chunk_offset)->run($this->conn);
+        } else {
+            $content_data = $this->content_table->get($content_id)->getField('chunk')->run($this->conn);
         }
 
         // Counter Increment. 
         $this->counter ++;
 
         // Return data.
-        return $content['chunk'];
+        return ($content_data);
     }
 
     private function getContent($content_id) {
         if ($this->counter != $this->first_chunk_id) {
-            return $this->content_table->get($content_id)->run($this->conn);
+            return $this->content_table->get($content_id)->getField('chunk')->run($this->conn);
         } else {
-            $chunk_offset = $file_offset - ($this->first_chunk_id * CHUNK_SIZE);
-            return $this->content_table->get($content_id)->slice($chunk_offset)->run($this->conn);
+            $chunk_offset = $this->file_offset % CHUNK_SIZE;
+            return $this->content_table->get($content_id)->getField('chunk')->slice($chunk_offset)->run($this->conn);
         }
     }
 
