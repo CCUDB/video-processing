@@ -94,7 +94,6 @@ class VideoStream
             if ($chunk === true) {
                 break;
             }
-            //echo strlen($chunk);
             echo $chunk;
             ob_flush();
             flush();

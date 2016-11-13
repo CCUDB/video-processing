@@ -19,5 +19,7 @@ if ($action === "play") {
     //echo "Go Fuck U Self.";
 }*/
 
+echo 1;
 $video_stream_obj = new VideoStream('[SumiSora&CASO][Sansyasanyou][01][GB][720p].mp4');
+echo 2;
 $video_stream_obj->start();

@@ -18,6 +18,8 @@ class VideoContent
     private $first_chunk_id;
     private $counter; // from 1 to n
 
+    private $file_size;
+
     private $conn;
     private $meta_table;
     private $content_table;
@@ -32,8 +34,10 @@ class VideoContent
         $this->file_name = $file_name;
         $this->file_offset = $offset;
         $this->file_id = $this->meta_table->get($this->real_file_path)->run($this->conn)['video_id'];
-        $this->first_chunk_id = (int)(ceil($offset / CHUNK_SIZE));
+        $this->first_chunk_id = (int)(floor($offset / CHUNK_SIZE));
         $this->counter = $this->first_chunk_id;
+
+        $this->file_size = filesize(VIDEO_STORAGE . '/' . $file_name);
     }
 
     function __destruct() {
@@ -42,12 +46,12 @@ class VideoContent
 
     public function setOffset($offset) {
         $this->file_offset = $offset;
-        $this->first_chunk_id = (int)(ceil($offset / CHUNK_SIZE));
+        $this->first_chunk_id = (int)(floor($offset / CHUNK_SIZE));
         $this->counter = $this->first_chunk_id;
     }
 
     public function nextContent() {
-        $content_id = $this->file_id * 10000 + $this->counter;
+        $content_id = $this->file_id * 1000000 + $this->counter;
         $content = $this->content_table->get($content_id)->run($this->conn);
 
         // If content not exist, create -> update. 
@@ -69,12 +73,13 @@ class VideoContent
                 $this->real_file_path,
                 NULL,
                 NULL,
-                CHUNK_SIZE * ($this->counter - 1),
+                CHUNK_SIZE * $this->counter,
                 CHUNK_SIZE
             );
 
+            file_put_contents('php://stderr', "Progress ".(CHUNK_SIZE * $this->counter)."/{$this->file_size}\n");
             // If there is no data to read, than set the insert-data content to True
-            if ($data === NULL) {
+            if (strlen($data) == 0) {
                 $insert_data = true;
             } else {
                 $insert_data = \r\binary($data);
@@ -97,6 +102,7 @@ class VideoContent
         } else {
             $content_data = $this->content_table->get($content_id)->getField('chunk')->run($this->conn);
         }
+
 
         // Counter Increment. 
         $this->counter ++;
