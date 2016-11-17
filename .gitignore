@@ -1,5 +1,6 @@
 src/composer.lock
 src/vendor/
 testVideo/
+rethinkd_bdata/
 
 *.swp

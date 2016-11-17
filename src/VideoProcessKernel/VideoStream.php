@@ -7,7 +7,7 @@
 
 namespace Video;
 
-include_once 'Includes.php';
+include_once '../Includes.php';
 
 class VideoStream
 {
@@ -37,7 +37,6 @@ class VideoStream
         ob_start();
         header('Content-type: video/mp4');
         header('Cache-Control: max-age=2592000, public');
-        //header('Cache-Control: no-store');
         header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT');
 
         $this->video_start = 0;

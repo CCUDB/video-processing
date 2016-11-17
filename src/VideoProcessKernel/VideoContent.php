@@ -7,7 +7,7 @@
 
 namespace Video;
 
-include_once 'Includes.php';
+include_once '../Includes.php';
 
 class VideoContent
 {
